@@ -6,43 +6,43 @@
 
 This is my solution to comma.ai's programming challenge which you can download [here](http://geohot.com/speed_challenge.tar.gz). The goal is to predict the speed of a car at each frame of a video.
 
-### Data
+## Data
 
 - `drive.mp4`: the video shot at 25 fps. Equivalent to 8616 frames of size 640x480.
 - `drive.json`: json file containing 8616 pairs of (`exact_picture_time`, `speed_in_meters_per_second_at_that_time`). Exact speed values were ground truthed from the car speedometer.
 
-### Requirements
+## Requirements
 
 - ffmpeg
 - python 3+
 - keras
 - scikit-learn
 
-### File Structure
+## File Structure
 
 - `preprocessing.py`: run this script to convert the video to a set of frames and then the frames to a set of numpy arrays. Also reads in the ground truth speeds.
 - `main.py`: extract the features using a pretrained vgg-16. You only need to do this once because the features are dumped as pickle files. Additionally, train a ridge regression model on the extracted features, test on the test data and return the MSE error.
 
-### My Approach
+## My Approach
 
 I decided to take this challenge right after completing Stanford's [CS231n](http://cs231n.stanford.edu/), so I knew right away I wanted to leverage a ConvNet in my solution. I had 2 problems though:
 
 - **first**, the dataset (~8.5k images) was not large enough to train a decent enough network. I could have used some aggressive data augmentation but this would prove to be computationally expensive.
 
-- the **second** and main bottleneck is that I don't own a decent GPU[^1] and my RAM is not large enough so I knew I had to use some sort of transfer learning.
+- the **second** and main bottleneck is that I don't own a decent GPU and my RAM is not large enough (*I was not familiar with cloud computing services like AWS at the time. Shame on me!*) so I knew it would be smart to use some sort of transfer learning.
 
 My ultimate decision was to use a VGG16 pretrained model and extract the features of the images at the earlier layers of the network.
 
 <span style="color:red">**Why earlier?**</span> Well, my dataset is different than the one vgg16 was trained on: in fact vgg was trained on imagenet which is a dataset of animals, cars and planes. Since a convnet detects low level generic features at the early layers of the network, (i.e. edge detectors or color blob detectors) and as you move up it combines those to detect more high-level/training-data specific structures, I decided I would use `block2_pool` of vgg16.
 
 <p align="center">
- <img src=".\imgs\vgg16.png" width="280">
+ <img src=".\imgs\vgg16.png" width="330">
 </p>
 
 As you can see in the image above, `block2_pool` is located in the early layers of the network.
 
 
-#### Preprocessing Step
+## Preprocessing Step
 
 - Converted the drive.mp4 to 8616 640x480 images using the following bash command:
 
@@ -62,7 +62,7 @@ ffmpeg -i drive.mp4 -r 25 './frames/img%04d.jpg'
 
 For the full code of the preprocessing step, open `preprocessing.py`.
 
-#### Model Training
+## Model Training
 
 I took `X_train` and `X_test`, passed them through VGG16 right up until `block2_pool` and got the output `train_features` and `test_features`. Those had a dimensionality of 18432.
 
@@ -78,12 +78,10 @@ Here's an image of the MSE calculated for 200x200 images on the held out test da
  <img src=".\imgs\mse.png" width="380">
 </p>
 
-#### Misc.
+## Misc.
 
 Just for the heck of it, here's a t-sne visualization of the training features extracted by the convnet. Looks like a bunch of colored spaghetti if you ask me!
 
 <p align="center">
- <img src=".\imgs\tsne.png" width="380">
+ <img src=".\imgs\tsne.png" width="420">
 </p>
-
-[^1]: I was not familiar with cloud computing services like AWS at the time. Shame on me!
