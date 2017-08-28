@@ -1,7 +1,7 @@
 ## Predicting Vehicle Speed From A Video
 
 <p align="center">
- <img src=".\imgs\splash.png" width="380">
+ <img src=".\imgs\splash.png" width="480">
 </p>
 
 This is my solution to comma.ai's programming challenge which you can download [here](http://geohot.com/speed_challenge.tar.gz). The goal is to predict the speed of a car at each frame of a video.
