@@ -11,8 +11,8 @@ out_path = 'data/dump/'
 img_path = 'data/frames/'
 
 # img params
-height = 24
-width = 32
+height = 240
+width = 320
 channels = 3
 
 # create mask for splitting (test will be 10% of data)
