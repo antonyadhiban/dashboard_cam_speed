@@ -14,7 +14,7 @@ from sklearn.decomposition import TruncatedSVD
 np.random.seed(1400)
 
 # path params
-dump_path = '/Users/kevin/Desktop/speed_challenge/data/dump/'
+dump_path = 'data/dump/'
 
 def load_data(path):
 
@@ -22,9 +22,9 @@ def load_data(path):
     X_train = load_hdf5(path + "X_train_50.hdf5")
     y_train = load_hdf5(path + "y_train_50.hdf5")
 
-    # load test data
-    X_test = load_hdf5(path + "X_test_200.hdf5")
-    y_test = load_hdf5(path + "y_test_200.hdf5")
+    # load test data 
+    X_test = load_hdf5(path + "X_test_50.hdf5")
+    y_test = load_hdf5(path + "y_test_50.hdf5")
 
     return X_train, y_train, X_test, y_test
 
@@ -49,7 +49,7 @@ def get_vgg_features(dump_path):
     # for i, layer in enumerate(model.layers):
     #     print(i, layer.name)
 
-    model = Model(input=base_model.input, output=base_model.get_layer('block2_pool').output)
+    model = Model(inputs=base_model.input, outputs=base_model.get_layer('block2_pool').output)
 
     print("Computing train features...")
     train_features = model.predict(X_train)
@@ -76,7 +76,7 @@ def main():
     get_vgg_features(dump_path)
     
     print("Loading features from HDF5 files...")
-    # train_features = load_hdf5(dump_path + "train_features_200.hdf5")
+    train_features = load_hdf5(dump_path + "train_features_200.hdf5")
     test_features = load_hdf5(dump_path + "test_features_200.hdf5")
     y_train = load_hdf5(dump_path + "y_train_50.hdf5")
     y_test = load_hdf5(dump_path + "y_test_50.hdf5")

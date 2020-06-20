@@ -6,13 +6,13 @@ from utils import *
 from sklearn.utils import shuffle
 
 # path params
-gt_path = '/Users/kevin/Desktop/speed_challenge/data/'
-out_path = '/Users/kevin/Desktop/speed_challenge/data/dump/'
-img_path = '/Users/kevin/Desktop/speed_challenge/data/frames/'
+gt_path = 'data/'
+out_path = 'data/dump/'
+img_path = 'data/frames/'
 
 # img params
-height = 50
-width = 50
+height = 24
+width = 32
 channels = 3
 
 # create mask for splitting (test will be 10% of data)
@@ -44,14 +44,31 @@ for i in range(num_imgs):
 print("\nConverting groundTruth labels to numpy array...")
 
 # this part is for the groundTruth labels
-with open(gt_path + 'drive.json') as f:
-    data = json.load(f)
+# with open(gt_path + 'drive.json') as f:
+#     data = json.load(f)
+
+# #
+a = np.loadtxt('data/train.txt')
+print(a.shape)
+# #
 
 # convert to numpy array
-data = np.asarray(data)
+# data = np.asarray(data)
 
 # extract speed
-y = data[:, 1]
+# y = data[:, 1]
+y = a
+
+
+# #
+def shuffle_sparse(matrix, target, test_proportion):
+    ratio = int(matrix.shape[0]/test_proportion) #should be int
+    X_train = matrix[ratio:,:]
+    X_test =  matrix[:ratio,:]
+    Y_train = target[ratio:,:]
+    Y_test =  target[:ratio,:]
+    return X_train, X_test, Y_train, Y_test
+# #
 
 # shuffle
 print("\nShuffling the data...")
